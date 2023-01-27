@@ -1,0 +1,42 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: logging-elasticsearch
+spec:
+  version: 7.6.2
+  image: elasticsearch:7.6.2
+  nodeSets:
+  - name: master
+    count: 1
+    volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 100Gi
+        storageClassName: yc-network-ssd
+    config:
+      node.master: true
+      node.data: false
+      node.ingest: false
+      xpack.ml.enabled: true
+      node.store.allow_mmap: false
+  - name: data
+    count: 1
+    config:
+      node.master: false
+      node.data: true
+      node.ingest: false
+      xpack.ml.enabled: true
+      node.store.allow_mmap: false
+  - name: client
+    count: 1
+    config:
+      node.master: false
+      node.data: false
+      node.ingest: true
+      xpack.ml.enabled: true
+      node.store.allow_mmap: false

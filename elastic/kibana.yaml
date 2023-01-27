@@ -1,0 +1,10 @@
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: logging-kibana
+spec:
+  version: 7.6.2
+  count: 1
+  image: soaron/kibana:7.6.2
+  elasticsearchRef:
+    name: logging-elasticsearch

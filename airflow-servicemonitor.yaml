@@ -1,0 +1,24 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: airflow-exporter
+  namespace: monitoring
+  labels:
+    app: airflow-exporter
+    component: worker
+    release: monitoring
+    prometheus: kube-prometheus
+spec:
+  selector:
+    matchLabels:
+      component: statsd
+      release: airflow
+  namespaceSelector:
+    matchNames:
+    - airflow
+  jobLabel: jobLabel
+  endpoints:
+  - port: statsd-scrape
+    path: /metrics
+    interval: 30s
+
